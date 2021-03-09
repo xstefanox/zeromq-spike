@@ -6,10 +6,16 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    environment:
+      PORT: 5000
     command: pipenv run producer
 
   consumer:
     build:
       dockerfile: Dockerfile
       context: .
+    environment:
+      PRODUCER_PORT: 5000
+      PRODUCER_HOST: producer
+
     command: pipenv run consumer
