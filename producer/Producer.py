@@ -5,7 +5,7 @@ from time import sleep
 import zmq
 from zmq import Socket, PUSH, ZMQError
 
-from producer.logger import log
+from logger.logger import log
 
 
 class Producer:

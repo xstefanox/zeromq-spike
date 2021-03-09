@@ -3,7 +3,7 @@ import json
 import zmq
 from zmq import Socket, PULL, ZMQError
 
-from producer.logger import log
+from logger.logger import log
 
 
 class Consumer:
