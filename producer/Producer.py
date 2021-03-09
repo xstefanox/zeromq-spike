@@ -38,7 +38,8 @@ class Producer:
                     else:
                         log.error(e)
 
-        log.info("terminating producer")
+        log.info("terminating")
+        context.term()
 
     def stop_producing(self):
         self.producing = False

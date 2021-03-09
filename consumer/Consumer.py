@@ -41,6 +41,7 @@ class Consumer:
                         log.error(e.errno)
 
         log.info("terminating")
+        context.term()
 
     def stop_consuming(self):
         self.consuming = False
