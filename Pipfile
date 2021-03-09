@@ -10,3 +10,6 @@ pyzmq = "*"
 
 [requires]
 python_version = "3.9"
+
+[scripts]
+producer = "python producer/main.py"
