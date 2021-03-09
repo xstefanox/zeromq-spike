@@ -1,5 +1,8 @@
-.venv
+*.yaml
 .dockerignore
+.git
 .gitignore
-*.yml
+.idea
+.venv
 Dockerfile
+docker-compose.yml

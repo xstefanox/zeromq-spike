@@ -4,5 +4,12 @@ services:
 
   producer:
     build:
-      dockerfile: producer.dockerfile
+      dockerfile: Dockerfile
       context: .
+    command: pipenv run producer
+
+  consumer:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: pipenv run consumer
