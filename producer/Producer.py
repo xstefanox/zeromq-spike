@@ -1,4 +1,6 @@
+import json
 from random import random
+from time import sleep
 
 import zmq
 from zmq import Socket, PUSH, ZMQError
@@ -23,10 +25,14 @@ class Producer:
             self.socket.bind(f"tcp://*:{self.port}")
 
             while self.producing:
-                message = f"hello world ({random()}"
+                message = {
+                    "text": "hello world",
+                    "value": random(),
+                }
                 log.debug("producing message [%s]" % message)
                 try:
-                    self.socket.send(bytes(message, 'UTF-8'))
+                    self.socket.send(bytes(json.dumps(message), 'UTF-8'))
+                    sleep(1)
                 except ZMQError as e:
                     if e.errno == zmq.ENOTSOCK:
                         log.debug("socket has been closed, terminating")

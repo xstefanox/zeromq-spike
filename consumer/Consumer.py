@@ -1,3 +1,5 @@
+import json
+
 import zmq
 from zmq import Socket, PULL, ZMQError
 
@@ -24,8 +26,9 @@ class Consumer:
 
             while self.consuming:
                 try:
-                    message = self.socket.recv()
-                    log.debug("consuming message [%s]" % message)
+                    # noinspection PyUnresolvedReferences
+                    message = json.loads(self.socket.recv().decode("utf-8"))
+                    log.debug("consuming message: %s %s" % (message["text"], message["value"]))
                 except ZMQError as e:
                     if e.errno == zmq.ENOTSOCK:
                         log.debug("socket has been closed")
