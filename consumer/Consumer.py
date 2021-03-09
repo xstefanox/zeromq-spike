@@ -1,7 +1,5 @@
-import json
-
 import zmq
-from zmq import Socket, PULL, ZMQError
+from zmq import Socket, PULL, ZMQError, ENOTSOCK, RCVTIMEO, EAGAIN
 
 from logger.logger import log
 
@@ -12,9 +10,10 @@ class Consumer:
     consuming: bool = True
     socket: Socket = None
 
-    def __init__(self, producer_host, producer_port):
+    def __init__(self, producer_host, producer_port, receive_timeout_ms):
         self.producer_host = producer_host
         self.producer_port = producer_port
+        self.receive_timeout_ms = receive_timeout_ms
 
     def run(self):
         log.info(f"starting consumer, connecting to {self.producer_host}:{self.producer_port}")
@@ -22,20 +21,26 @@ class Consumer:
         context = zmq.Context()
 
         with context.socket(PULL) as self.socket:
+            self.socket.setsockopt(RCVTIMEO, self.receive_timeout_ms)
             self.socket.connect(f"tcp://{self.producer_host}:{self.producer_port}")
 
             while self.consuming:
                 try:
-                    # noinspection PyUnresolvedReferences
-                    message = json.loads(self.socket.recv().decode("utf-8"))
+                    message = self.socket.recv_json()
                     log.debug("consuming message: %s %s" % (message["text"], message["value"]))
                 except ZMQError as e:
-                    if e.errno == zmq.ENOTSOCK:
+                    if e.errno == ENOTSOCK:
                         log.debug("socket has been closed")
+                    elif e.errno == EAGAIN:
+                        log.info(
+                            f"no message received for %s ms, assuming producer has shutdown" % self.receive_timeout_ms
+                        )
+                        break
                     else:
                         log.error(e)
+                        log.error(e.errno)
 
-        log.info("terminating consumer")
+        log.info("terminating")
 
     def stop_consuming(self):
         self.consuming = False

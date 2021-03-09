@@ -1,4 +1,3 @@
-import json
 from random import random
 from time import sleep
 
@@ -29,9 +28,9 @@ class Producer:
                     "text": "hello world",
                     "value": random(),
                 }
-                log.debug("producing message [%s]" % message)
+                log.debug("producing message %s" % message)
                 try:
-                    self.socket.send(bytes(json.dumps(message), 'UTF-8'))
+                    self.socket.send_json(message)
                     sleep(1)
                 except ZMQError as e:
                     if e.errno == zmq.ENOTSOCK:
