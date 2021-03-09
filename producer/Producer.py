@@ -1,4 +1,5 @@
 from random import random
+from time import sleep
 
 import zmq
 from zmq import Socket, PUSH, ZMQError
@@ -15,15 +16,14 @@ class Producer:
 
         context = zmq.Context()
 
-        with context.socket(PUSH) as socket:
-            self.socket = socket
-            socket.bind("tcp://*:5555")
+        with context.socket(PUSH) as self.socket:
+            self.socket.bind("tcp://*:5555")
 
             while self.producing:
                 message = f"hello world ({random()}"
                 log.debug("producing message [%s]" % message)
                 try:
-                    socket.send(bytes(message, 'UTF-8'))
+                    self.socket.send(bytes(message, 'UTF-8'))
                 except ZMQError as e:
                     if e.errno == zmq.ENOTSOCK:
                         log.debug("socket has been closed, terminating")
