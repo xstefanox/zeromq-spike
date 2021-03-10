@@ -3,7 +3,9 @@
 The following requirements are needed to build and run the project:
 
 - `pipenv`: needed to install the Python environment and dependencies and to run the application
-- `docker`: to run and scale the processes in a production-like environment
+- `docker`: to containerize the processes
+- `docker-compose`: to run and scale the processes in a production-like environment
+- `pre-commit`: to validate code changes upon commit
 
 # Execution
 
